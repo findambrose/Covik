@@ -1,3 +1,4 @@
+import 'package:covid_tracker/controllers/User.dart';
 import 'package:flutter/material.dart';
 
 class  Login extends StatefulWidget {
@@ -9,7 +10,27 @@ class  Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   final _formKey = GlobalKey<FormState>() ;
+  
+ 
+  static bool success;
+  static var signedUpUserEmail;
+  
+  
 
+  updateEmailAndUser(String email, bool successSet){
+    setState((){
+      success = successSet;
+      signedUpUserEmail = email;
+    });
+  }
+
+  setSuccessToFalse(bool success){
+    setState((){
+      success = false;
+      
+    });
+  }
+  
   var emailController, passwordController = TextEditingController();
 
   @override
@@ -76,7 +97,8 @@ class _LoginState extends State<Login> {
 
                     if ( _formKey.currentState.validate()) {
 
-                      //Do something if all info is valid
+                      UserController(email: emailController.text, password: passwordController.text, updateEmailAndUser: updateEmailAndUser, setSuccessToFalse: setSuccessToFalse(success)).login();
+
                       
                         print(Text('Login Button pressed'));
                     }

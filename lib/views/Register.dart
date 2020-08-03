@@ -1,4 +1,6 @@
+import 'package:covid_tracker/controllers/User.dart';
 import 'package:flutter/material.dart';
+
 
 class Register extends StatefulWidget {
   @override
@@ -10,6 +12,26 @@ class _RegisterState extends State<Register> {
 
   //set default display value //stores current state of the dropdown
   var _displayValue = 2;
+  static bool success;
+  static var signedUpUserEmail;
+  
+  
+
+  updateEmailAndUser(String email, bool successSet){
+    setState((){
+      success = successSet;
+      signedUpUserEmail = email;
+    });
+  }
+
+  setSuccessToFalse(bool success){
+    setState((){
+      success = false;
+      
+    });
+  }
+  
+  
 
   var nameController,
       emailController,
@@ -123,10 +145,15 @@ class _RegisterState extends State<Register> {
                           if (_formKey.currentState.validate()) {
                             print('Register button clicked');
 
+                            UserController(email: emailController.text, password: passwordController.text, updateEmailAndUser: updateEmailAndUser, setSuccessToFalse: setSuccessToFalse(success)).register();
+
                             //show toast
-                            return AlertDialog(
-                              content: Text('$emailController.text()'),
-                            );
+                            // return AlertDialog(
+                            //   content: Text('$emailController.text()'),                           
+                            // );
+                             
+
+                            
 
                             // Scaffold.of(context).showSnackBar(
                             //   //create new instance of the snack bar
@@ -144,7 +171,12 @@ class _RegisterState extends State<Register> {
                         textColor: Colors.orange,
                         icon: Icon(Icons.open_in_new),
                       );
-                    })
+                    }),
+
+                    Container(
+                      alignment: Alignment.center,
+                      child: Text(!success == null ? (success ? 'Successfully registered $signedUpUserEmail': 'Registration failed' ): ''  ),
+                    )
                   ],
                 ))
           ],
