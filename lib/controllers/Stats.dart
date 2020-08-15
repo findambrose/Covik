@@ -1,12 +1,13 @@
-import 'dart:io';
-
+import 'package:covid_tracker/models/Country.dart';
+import 'package:dio/dio.dart';
 class Stats{
 
   //What i'll get
-  int time; 
-  bool isDaytime;
+  String countryStat; 
+  String worldStat; 
+ 
   //what i'll need
-  String location;
+  Country location;
   String flag;
 
   Stats({this.location, this.flag});
@@ -14,15 +15,34 @@ class Stats{
 
 
   //function 
-  void getTime() async{
+  Future<void> getStatsByCountry() async{
+
+   try {
+    Dio dio = new Dio();
+    Response response = await dio.get('https://jsonplaceholder.typicode.com/posts/1');
+    print(response.data.body.toString());
+  } catch (e) {
+    print('Error Caught:' + e);
+    countryStat = 'Count not found, try reloading the page';
+
+  } 
+   
+  }
+
+   Future<void> getWorldStats() async{
 
     //1. code to get time from api and set it
-    //2. check if it is daytime and set
-    
+    //2. 
+  try {
+    Dio dio = new Dio();
+    Response response = await dio.get('https://jsonplaceholder.typicode.com/posts/1');
+    print(response.data);
+  } catch (e) {
+    print('Error Caught' + e);
+    worldStat = 'Stat not found, try reloading the page';
 
-    // HttpClient client = new HttpClient();
-    // client.getUrl('fsr');
-
+  }   
+   
   }
 
 }
