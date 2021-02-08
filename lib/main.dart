@@ -1,6 +1,5 @@
 import 'package:covid_tracker/views/LocationSearch.dart';
 import 'package:covid_tracker/views/Home.dart';
-import 'package:covid_tracker/views/Loading.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());
