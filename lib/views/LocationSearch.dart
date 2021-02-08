@@ -1,6 +1,7 @@
 import 'package:covid_tracker/BloC/LocationSearchBloc.dart';
 import 'package:covid_tracker/models/Country.dart';
 import 'package:covid_tracker/utils/SearchHelper.dart';
+import 'package:covid_tracker/utils/SharedPrefUtil.dart';
 import 'package:flutter/material.dart';
 
 class FlashPage extends StatelessWidget {
@@ -35,39 +36,70 @@ class FlashPage extends StatelessWidget {
                       );
                     }
 
-                     if (snapshot.connectionState == ConnectionState.active) {
-                      print("Connected. Loadig countries");
-                      return CircularProgressIndicator(
-                        
-                      );
-                    }
+                    if (snapshot.hasData) {
+                      Map<String, dynamic> data = snapshot.data;
+                      if (data['countries'] == "") {
+                        return AlertDialog(
+                          content:
+                              Text('An data error occured:: ${data["error"]}'),
+                        );
+                      } else {
+                        List<Country> countries = data['countries'];
+                        countries.forEach((element) {
+                          print(element.name);
+                        });
+                        return Container(
+                          padding: EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5)),
+                          child: SingleChildScrollView(
+                            child: ListView.builder(
+                                shrinkWrap: true,
+                                itemCount: countries.length,
+                                itemBuilder: (context, index) {
+                                  return Padding(
+                                    padding: const EdgeInsets.all(4.0),
+                                    child: Container(
 
-                     if (snapshot.hasData) {
+                                        child: Column(
+                                          children: [
+                                            SizedBox(height: 2,),
+                                            FlatButton(
+                                              color: Colors.white,
+                                      child: Text(countries[index].name),
+                                              onPressed: (){
+                                                //Save to shared prefs
+                                                SharedPrefUtil sharedPrefUtil =  SharedPrefUtil();
+                                                Country country = Country(flagUrl: "", name: countries[index].name, searchUrl: countries[index].name.toLowerCase(),  );
+                                                
+                                                sharedPrefUtil.saveLocation(country);
+                                                //Move to next screen with country details
+                                                Country countryDetails = Country(flagUrl: "", name: countries[index].name, searchUrl: countries[index].name.toLowerCase());
+                                                Navigator.pushNamed(context, '/home', arguments: {
+                                                  'countryDets': countryDetails
+                                                });
 
-                       List<Country> countries = snapshot.data;
-                      print("No General Error. Data Error Might Have Occured Tho. Data  is ${countries.toString()}");
-                      return Container(
-                        padding: EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5)
-                        ),
 
-                        child:  SingleChildScrollView(
-                          child: ListView.builder(
-                          
-                          itemCount: countries.length,
-                          itemBuilder: (context, index){
-                            return Padding(
-                              padding: const EdgeInsets.all(4.0),
-                              child: Text(countries[index].name),
-                            );
+                                              },
+                                    ),
+                                            SizedBox(height: 4,),
+                                            Container(
+                                                decoration: BoxDecoration(
+                                                  color: Colors.purple
+                                                ),
+                                                height:2)
+                                          ],
+                                        ),
 
-                        }),
-                        )
-                      );
+                                    ),
+                                  );
+                                }),
+                          ),
+                        );
+                      }
                     }
                     return Container();
-                  })
+                  }),
             ],
           ),
         ),
