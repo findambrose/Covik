@@ -4,17 +4,22 @@ class StatsHelper {
   Dio dio;
   Future<Map<String, dynamic>> getStats(String countryName) async {
     Map<String, dynamic> allStats;
-    Map<String, dynamic> countryStats;
-    Map<String, dynamic> worldStats;
+    Map<String, dynamic> countryStats = {};
+    Map<String, dynamic> worldStats = {};
 
-    var url = "https://disease.sh/v3/covid-19/countries/$countryName";
+    print("Entered Stats Method: Country Name is: " + countryName);
+
+    var url = "https://disease.sh/v3/covid-19/countries/${countryName.toLowerCase()}";
     dio = Dio();
     await dio.get(url).then((response) {
+
+      print("Data Success!!!!!!");
       var countryResponse = response.data;
-      print("Cases Today::" + countryResponse['todayCases']);
-      print("All time Cases::" + countryResponse['todayCases']);
-      print("Deaths Today::" + countryResponse['todayDeaths']);
-      print("Recovered::" + countryResponse['todayRecovered']);
+
+        print(response.data);      
+      // print("All time Cases::" + countryResponse['todayCases']);
+      // print("Deaths Today::" + countryResponse['todayDeaths']);
+      // print("Recovered::" + countryResponse['todayRecovered']);
 
       countryStats = {'countryStat': countryResponse,
       'error': ""};
@@ -25,6 +30,7 @@ class StatsHelper {
     });
 
     await dio.get('https://disease.sh/v3/covid-19/all').then((response) {
+      print("Data Success..All!!!!!!");
       print("Cases Today::" + response.data['todayCases'].toString());
       print("Cases Deaths::" + response.data['todayDeaths'].toString());
       print("Cases Recovered::" + response.data['todayRecovered'].toString());
@@ -40,13 +46,11 @@ class StatsHelper {
       print("Error fetching WorldStats" + e.message);
     });
 
-
-    if(countryStats != null || worldStats != null){
+    if(countryStats.isNotEmpty || worldStats.isNotEmpty){
         allStats = {'worldStats': worldStats,
     'countryStats': countryStats};
 
     }
-   
     return allStats;
   }
 }

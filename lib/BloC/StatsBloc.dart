@@ -1,7 +1,9 @@
 import 'package:covid_tracker/utils/StatsHelper.dart';
 import 'package:rxdart/rxdart.dart';
 
-class StatsBloc {
+import 'Bloc.dart';
+
+class StatsBloc extends Bloc {
 
   Stream<Map<String, dynamic>> stats = Stream.empty();
 
@@ -10,6 +12,13 @@ class StatsBloc {
 
   StatsBloc(StatsHelper statsHelper) {
     stats = controller.distinct().asyncMap(statsHelper.getStats).asBroadcastStream();
+  }
+
+  @override
+  dispose() {
+    
+    controller.close();
+  
   }
 
 }
